@@ -4,8 +4,16 @@ require "active_support/core_ext/hash/slice"
 module ParamsCleaner
   extend ActiveSupport::Concern
 
-  def clean_params(root)
-    params[root].slice(*self.class._allowed_params[root])
+  def clean_params
+    cleaned_params = params.map do |key, val|
+      if val.is_a?(Hash)
+        [key, val.slice(*self.class._allowed_params[key])]
+      else
+        [key, val]
+      end
+    end
+
+    Hash[cleaned_params]
   end
 
   module ClassMethods

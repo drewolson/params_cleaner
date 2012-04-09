@@ -1,8 +1,8 @@
 require "spec_helper"
 
 describe ParamsCleaner do
-  describe "allowed_params" do
-    it "only returns whitelisted params in the clean_params call" do
+  describe "clean_params" do
+    it "returns params that respect the allowed_params" do
       klass = Class.new do
         include ParamsCleaner
 
@@ -21,7 +21,7 @@ describe ParamsCleaner do
 
       instance = klass.new
 
-      instance.clean_params(:root).should == {
+      instance.clean_params[:root].should == {
         :foo => "foo",
         :bar => "bar"
       }
