@@ -26,5 +26,35 @@ describe ParamsCleaner do
         :bar => "bar"
       }
     end
+
+    it "handles nested params" do
+      klass = Class.new do
+        include ParamsCleaner
+
+        allowed_params :root => [:foo, :bar],
+                       :foo => [:a, :b]
+
+        def params
+          {
+            :root => {
+              :foo => {
+                :a => 1,
+                :b => 2,
+                :c => 3
+              },
+              :bar => "bar",
+              :baz => "baz"
+            }
+          }
+        end
+      end
+
+      instance = klass.new
+
+      instance.clean_params[:root][:foo].should == {
+        :a => 1,
+        :b => 2
+      }
+    end
   end
 end
