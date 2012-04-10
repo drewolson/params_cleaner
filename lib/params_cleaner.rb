@@ -4,7 +4,7 @@ require "active_support/core_ext/hash/slice"
 module ParamsCleaner
   extend ActiveSupport::Concern
 
-  VERSION = "0.1.0"
+  VERSION = "0.1.1"
 
   def clean_params(root_params = params)
     cleaned_params = root_params.map do |key, val|
