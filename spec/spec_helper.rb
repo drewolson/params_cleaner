@@ -1,1 +1,1 @@
-require File.expand_path(File.join(File.dirname(__FILE__), "..", "lib", "params_cleaner"))
+require File.expand_path("../../lib/params_cleaner", __FILE__)

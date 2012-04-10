@@ -1,6 +1,12 @@
 require "spec_helper"
 
 describe ParamsCleaner do
+  describe "version" do
+    it "is 0.1.0" do
+      ParamsCleaner::VERSION.should == "0.1.0"
+    end
+  end
+
   describe "clean_params" do
     it "returns params that respect the allowed_params" do
       klass = Class.new do

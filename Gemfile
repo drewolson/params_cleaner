@@ -1,6 +1,6 @@
 source "http://rubygems.org"
 
-gem "active_support", "~>3.0.0"
+gem "activesupport", "~>3.2.3"
 
 group :development do
   gem "rake", "0.9.2.2"
