@@ -28,8 +28,33 @@ describe ParamsCleaner do
       instance = klass.new
 
       instance.clean_params[:root].should == {
-        :foo => "foo",
-        :bar => "bar"
+        "foo" => "foo",
+        "bar" => "bar"
+      }
+    end
+
+    it "handles hashes with indifferent_access" do
+      klass = Class.new do
+        include ParamsCleaner
+
+        allowed_params :root => [:foo, :bar]
+
+        def params
+          HashWithIndifferentAccess.new(
+            :root => HashWithIndifferentAccess.new(
+              :foo => "foo",
+              :bar => "bar",
+              :baz => "baz"
+            )
+          )
+        end
+      end
+
+      instance = klass.new
+
+      instance.clean_params[:root].should == {
+        "foo" => "foo",
+        "bar" => "bar"
       }
     end
 
@@ -58,8 +83,8 @@ describe ParamsCleaner do
       instance = klass.new
 
       instance.clean_params[:root][:foo].should == {
-        :a => 1,
-        :b => 2
+        "a" => 1,
+        "b" => 2
       }
     end
   end

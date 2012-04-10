@@ -1,5 +1,6 @@
 require "active_support/concern"
 require "active_support/core_ext/hash/slice"
+require "active_support/hash_with_indifferent_access"
 
 module ParamsCleaner
   extend ActiveSupport::Concern
@@ -8,15 +9,16 @@ module ParamsCleaner
 
   def clean_params(root_params = params)
     cleaned_params = root_params.map do |key, val|
-      if val.is_a?(Hash)
-        clean_values = clean_params(val.slice(*self.class._allowed_params[key]))
+      if val.kind_of?(Hash)
+        clean_values = clean_params(val.slice(*self.class._allowed_params[key.to_sym]))
         [key, clean_values]
       else
         [key, val]
       end
     end
 
-    Hash[cleaned_params]
+    cleaned_params_hash = Hash[cleaned_params]
+    HashWithIndifferentAccess.new(cleaned_params_hash)
   end
 
   module ClassMethods
