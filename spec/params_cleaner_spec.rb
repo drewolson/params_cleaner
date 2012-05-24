@@ -33,6 +33,39 @@ describe ParamsCleaner do
       }
     end
 
+    it "handles top level params" do
+      klass = Class.new do
+        include ParamsCleaner
+
+        allowed_params(
+          :top1,
+          :root => [:foo, :bar]
+        )
+
+        def params
+          {
+            :top1 => "value 1",
+            :top2 => "value 2",
+            :root => {
+              :foo => "foo",
+              :bar => "bar",
+              :baz => "baz"
+            }
+          }
+        end
+      end
+
+      instance = klass.new
+
+      instance.clean_params.should == {
+        "top1" => "value 1",
+        "root" => {
+          "foo" => "foo",
+          "bar" => "bar"
+        }
+      }
+    end
+
     it "handles hashes with indifferent_access" do
       klass = Class.new do
         include ParamsCleaner
@@ -62,8 +95,10 @@ describe ParamsCleaner do
       klass = Class.new do
         include ParamsCleaner
 
-        allowed_params :root => [:foo, :bar],
-                       :foo => [:a, :b]
+        allowed_params(
+          :root => [:foo, :bar],
+          :foo => [:a, :b]
+        )
 
         def params
           {
