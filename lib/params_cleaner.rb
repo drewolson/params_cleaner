@@ -29,7 +29,7 @@ module ParamsCleaner
   def _clean_value(key, value, top_level)
     return [key, value] unless top_level
 
-    if self.class._allowed_top_level.include?(key)
+    if self.class._allowed_top_level.include?(key.to_sym)
       [key, value]
     else
       []

@@ -43,15 +43,15 @@ describe ParamsCleaner do
         )
 
         def params
-          {
+          HashWithIndifferentAccess.new(
             :top1 => "value 1",
             :top2 => "value 2",
-            :root => {
+            :root => HashWithIndifferentAccess.new(
               :foo => "foo",
               :bar => "bar",
               :baz => "baz"
-            }
-          }
+            )
+          )
         end
       end
 
