@@ -60,3 +60,33 @@ clean_params[:player]
 clean_params[:player][:name]
 # => {:first => "Drew", :last => "Olson"}
 ```
+
+ParamsCleaner also supports validating top-level params.
+
+```ruby
+  allowed_params(
+    :game_id,
+    :player => [:name, :email]
+  )
+```
+
+Now, assume the following params hash:
+
+```ruby
+{
+  :game_id => "id",
+  :rating_id => "id",
+  :player => {
+    :email => "drew@drewolson.org"
+    :bad_key => "nefarious stuff",
+    :name => "Drew Olson"
+  }
+}
+```
+
+Here's what you'd see when calling the clean_params method:
+
+```ruby
+clean_params
+# => {:game_id => "id", :player => {:email => "drew@drewolson.org", :name => "Drew Olson"}}
+```
