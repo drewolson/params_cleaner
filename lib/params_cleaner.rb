@@ -8,16 +8,25 @@ module ParamsCleaner
   VERSION = "0.2.1"
 
   def clean_params(root_params = params, top_level = true)
-    cleaned_params = root_params.map do |key, val|
-      if val.kind_of?(Hash)
-        _clean_hash(key, val)
+    cleaned_params = root_params.map do |key, value|
+      if value.kind_of?(Hash)
+        _clean_hash(key, value)
+      elsif value.kind_of?(Array)
+        _clean_array(key, value)
       else
-        _clean_value(key, val, top_level)
+        _clean_value(key, value, top_level)
       end
     end
 
     cleaned_params_hash = Hash[cleaned_params]
     HashWithIndifferentAccess.new(cleaned_params_hash)
+  end
+
+  def _clean_array(key, value)
+    cleaned_values = value.map do |sub_value|
+      _clean_hash(key, sub_value).last
+    end
+    [key, cleaned_values]
   end
 
   def _clean_hash(key, value)

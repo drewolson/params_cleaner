@@ -15,13 +15,13 @@ describe ParamsCleaner do
         allowed_params :root => [:foo, :bar]
 
         def params
-          {
-            :root => {
+          HashWithIndifferentAccess.new(
+            :root => HashWithIndifferentAccess.new(
               :foo => "foo",
               :bar => "bar",
               :baz => "baz"
-            }
-          }
+            )
+          )
         end
       end
 
@@ -101,17 +101,17 @@ describe ParamsCleaner do
         )
 
         def params
-          {
-            :root => {
-              :foo => {
+          HashWithIndifferentAccess.new(
+            :root => HashWithIndifferentAccess.new(
+              :foo => HashWithIndifferentAccess.new(
                 :a => 1,
                 :b => 2,
                 :c => 3
-              },
+              ),
               :bar => "bar",
               :baz => "baz"
-            }
-          }
+            )
+          )
         end
       end
 
@@ -121,6 +121,32 @@ describe ParamsCleaner do
         "a" => 1,
         "b" => 2
       }
+    end
+
+    it "handles array params" do
+      klass = Class.new do
+        include ParamsCleaner
+
+        allowed_params(
+          :root => [:foo, :bar]
+        )
+
+        def params
+          HashWithIndifferentAccess.new(
+            :root => [
+              HashWithIndifferentAccess.new(:foo => "foo1", :bar => "bar1", :baz => "baz1"),
+              HashWithIndifferentAccess.new(:foo => "foo2", :bar => "bar2", :baz => "baz2")
+            ]
+          )
+        end
+      end
+
+      instance = klass.new
+
+      instance.clean_params[:root].should == [
+        {"foo" => "foo1", "bar" => "bar1"},
+        {"foo" => "foo2", "bar" => "bar2"}
+      ]
     end
   end
 end
