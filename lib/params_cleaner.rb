@@ -5,7 +5,7 @@ require "active_support/hash_with_indifferent_access"
 module ParamsCleaner
   extend ActiveSupport::Concern
 
-  VERSION = "0.2.1"
+  VERSION = "0.3.0"
 
   def clean_params(root_params = params, top_level = true)
     cleaned_params = root_params.map do |key, value|
