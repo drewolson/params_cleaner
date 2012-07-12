@@ -123,6 +123,25 @@ describe ParamsCleaner do
       }
     end
 
+    it "handles only specifying top level params even with nested params" do
+      klass = Class.new do
+        include ParamsCleaner
+
+        allowed_params :top_level
+
+        def params
+          HashWithIndifferentAccess.new(
+            :top_level => 1,
+            :nested => HashWithIndifferentAccess.new
+          )
+        end
+      end
+
+      instance = klass.new
+
+      instance.clean_params[:top_level].should == 1
+    end
+
     it "handles array params" do
       klass = Class.new do
         include ParamsCleaner
