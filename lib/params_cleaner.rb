@@ -48,6 +48,7 @@ module ParamsCleaner
   module ClassMethods
     def allowed_params(*params_groups)
       @allowed_top_level = []
+      @allowed_nested = {}
 
       params_groups.each do |params_group|
         if params_group.is_a?(Hash)
