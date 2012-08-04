@@ -90,3 +90,10 @@ Here's what you'd see when calling the clean_params method:
 clean_params
 # => {:game_id => "id", :player => {:email => "drew@drewolson.org", :name => "Drew Olson"}}
 ```
+
+You can even specify valid params for a given action:
+
+```ruby
+  allowed_params_for :create, :player => [:name, :email]
+  allowed_params_for :update, :player => [:name]
+```
