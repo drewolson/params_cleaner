@@ -24,11 +24,13 @@ module ParamsCleaner
     end
 
     def _allowed_top_level
-      @whitelist.each_with_object([]) do |params_group, top_level_params|
+      params_groups = []
+      @whitelist.each do |params_group|
         unless params_group.is_a?(Hash)
-          top_level_params << params_group
+          params_groups << params_group
         end
       end
+      params_groups
     end
 
     def _clean_array(key, value)
