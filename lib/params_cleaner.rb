@@ -8,7 +8,7 @@ require "./lib/params_cleaner/whitelist"
 module ParamsCleaner
   extend ActiveSupport::Concern
 
-  VERSION = "0.3.1"
+  VERSION = "0.4.0"
 
   def clean_params
     sanitized_params = _applicable_whitelists.map do |whitelist|
