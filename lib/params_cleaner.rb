@@ -29,8 +29,8 @@ module ParamsCleaner
   end
 
   def _current_action_name
-    if respond_to?(:controller)
-      controller.action_name.to_sym
+    if respond_to?(:action_name)
+      action_name.to_sym
     else
       nil
     end

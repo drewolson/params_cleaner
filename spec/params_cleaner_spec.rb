@@ -182,8 +182,8 @@ describe ParamsCleaner do
             @action = action
           end
 
-          def controller
-            OpenStruct.new(:action_name => @action)
+          def action_name
+            @action
           end
 
           def params
@@ -197,13 +197,13 @@ describe ParamsCleaner do
           end
         end
 
-        new_action = klass.new(:new)
+        new_action = klass.new("new")
         new_action.clean_params[:root].should == {
           "foo" => "foo",
           "bar" => "bar"
         }
 
-        create_action = klass.new(:create)
+        create_action = klass.new("create")
         create_action.clean_params[:root].should == {
           "baz" => "baz"
         }
@@ -220,8 +220,8 @@ describe ParamsCleaner do
             @action = action
           end
 
-          def controller
-            OpenStruct.new(:action_name => @action)
+          def action_name
+            @action
           end
 
           def params
@@ -235,13 +235,13 @@ describe ParamsCleaner do
           end
         end
 
-        new_action = klass.new(:new)
+        new_action = klass.new("new")
         new_action.clean_params[:root].should == {
           "foo" => "foo",
           "bar" => "bar"
         }
 
-        create_action = klass.new(:create)
+        create_action = klass.new("create")
         create_action.clean_params[:root].should == {
           "foo" => "foo",
           "bar" => "bar",
