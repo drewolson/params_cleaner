@@ -1,70 +1,54 @@
+require "ostruct"
 require "active_support/concern"
+require "active_support/core_ext/hash/deep_merge"
 require "active_support/core_ext/hash/slice"
 require "active_support/hash_with_indifferent_access"
+require "./lib/params_cleaner/whitelist"
 
 module ParamsCleaner
   extend ActiveSupport::Concern
 
   VERSION = "0.3.1"
 
-  def clean_params(root_params = params, top_level = true)
-    cleaned_params = root_params.map do |key, value|
-      if value.kind_of?(Hash)
-        _clean_hash(key, value)
-      elsif value.kind_of?(Array)
-        _clean_array(key, value)
-      else
-        _clean_value(key, value, top_level)
-      end
+  def clean_params
+    sanitized_params = _applicable_whitelists.map do |whitelist|
+      whitelist.sanitize(params)
     end
 
-    cleaned_params_hash = Hash[cleaned_params]
-    HashWithIndifferentAccess.new(cleaned_params_hash)
-  end
-
-  def _clean_array(key, value)
-    cleaned_values = value.map do |sub_value|
-      _clean_hash(key, sub_value).last
+    sanitized_params.inject(HashWithIndifferentAccess.new) do |new_params, sanitized|
+      new_params.deep_merge(sanitized)
     end
-    [key, cleaned_values]
   end
 
-  def _clean_hash(key, value)
-    allowed_keys = value.slice(*self.class._allowed_nested[key.to_sym])
-    clean_values = clean_params(allowed_keys, false)
-    [key, clean_values]
+  def _action_whitelists
+    self.class._action_whitelists
   end
 
-  def _clean_value(key, value, top_level)
-    return [key, value] unless top_level
+  def _applicable_whitelists
+    [_action_whitelists[:_all_], _action_whitelists[_current_action_name]].compact
+  end
 
-    if self.class._allowed_top_level.include?(key.to_sym)
-      [key, value]
+  def _current_action_name
+    if respond_to?(:controller)
+      controller.action_name.to_sym
     else
-      []
+      nil
     end
   end
 
   module ClassMethods
     def allowed_params(*params_groups)
-      @allowed_top_level = []
-      @allowed_nested = {}
-
-      params_groups.each do |params_group|
-        if params_group.is_a?(Hash)
-          @allowed_nested = params_group
-        else
-          @allowed_top_level << params_group
-        end
-      end
+      @action_whitelists ||= {}
+      @action_whitelists[:_all_] = Whitelist.new(params_groups)
     end
 
-    def _allowed_nested
-      @allowed_nested
+    def allowed_params_for(action, *params_groups)
+      @action_whitelists ||= {}
+      @action_whitelists[action] = Whitelist.new(params_groups)
     end
 
-    def _allowed_top_level
-      @allowed_top_level
+    def _action_whitelists
+      @action_whitelists
     end
   end
 end
