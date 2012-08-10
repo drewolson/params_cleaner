@@ -8,6 +8,34 @@ describe ParamsCleaner do
   end
 
   describe "clean_params" do
+    context "verify params" do
+      it "blows up if given bad params and verify params is true" do
+        ParamsCleaner::Configuration.should_receive(:verify_params?).and_return(true)
+
+        klass = Class.new do
+          include ParamsCleaner
+
+          allowed_params :root => [:foo, :bar]
+
+          def params
+            HashWithIndifferentAccess.new(
+              :root => HashWithIndifferentAccess.new(
+                :foo => "foo",
+                :bar => "bar",
+                :baz => "baz"
+              )
+            )
+          end
+        end
+
+        instance = klass.new
+
+        expect do
+          instance.clean_params
+        end.to raise_error("[ParamsCleaner] Invalid keys provided: baz")
+      end
+    end
+
     context "allowed_params" do
       it "returns params that respect the allowed_params" do
         klass = Class.new do

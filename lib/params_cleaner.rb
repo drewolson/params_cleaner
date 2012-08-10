@@ -3,6 +3,7 @@ require "active_support/concern"
 require "active_support/core_ext/hash/deep_merge"
 require "active_support/core_ext/hash/slice"
 require "active_support/hash_with_indifferent_access"
+require "./lib/params_cleaner/configuration"
 require "./lib/params_cleaner/whitelist"
 
 module ParamsCleaner
@@ -11,6 +12,8 @@ module ParamsCleaner
   VERSION = "0.4.0"
 
   def clean_params
+    _verify_params! if Configuration.verify_params?
+
     sanitized_params = _applicable_whitelists.map do |whitelist|
       whitelist.sanitize(params)
     end
@@ -33,6 +36,12 @@ module ParamsCleaner
       action_name.to_sym
     else
       nil
+    end
+  end
+
+  def _verify_params!
+    _applicable_whitelists.each do |whitelist|
+      whitelist.verify!(params)
     end
   end
 

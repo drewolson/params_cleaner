@@ -4,7 +4,7 @@ module ParamsCleaner
       @whitelist = whitelist
     end
 
-    def sanitize(params, top_level = true)
+    def sanitize(params, top_level=true)
       cleaned_params = params.map do |key, value|
         if value.kind_of?(Hash)
           _clean_hash(key, value)
@@ -17,6 +17,12 @@ module ParamsCleaner
 
       cleaned_params_hash = Hash[cleaned_params]
       HashWithIndifferentAccess.new(cleaned_params_hash)
+    end
+
+    def verify!(params, top_level=true)
+      cleaned_params = params.each do |key, value|
+        _verify_hash(key, value)
+      end
     end
 
     def _allowed_nested
@@ -54,6 +60,16 @@ module ParamsCleaner
       else
         []
       end
+    end
+
+    def _invalid_keys!(keys)
+      raise "[ParamsCleaner] Invalid keys provided: #{keys.join(", ")}"
+    end
+
+    def _verify_hash(key, value)
+      bad_keys = value.keys - _allowed_nested.fetch(key.to_sym, []).map(&:to_s)
+
+      _invalid_keys!(bad_keys) if bad_keys.any?
     end
   end
 end
