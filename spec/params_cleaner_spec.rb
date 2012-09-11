@@ -168,6 +168,30 @@ describe ParamsCleaner do
           {"foo" => "foo2", "bar" => "bar2"}
         ]
       end
+
+      it "handles arrays of non-hashes" do
+        klass = Class.new do
+          include ParamsCleaner
+
+          allowed_params(
+            :root => [:foo]
+          )
+
+          def params
+            HashWithIndifferentAccess.new(
+              :root => HashWithIndifferentAccess.new(
+                :foo => [1, 2]
+              )
+            )
+          end
+        end
+
+        instance = klass.new
+
+        instance.clean_params[:root].should == {
+          "foo" => [1, 2]
+        }
+      end
     end
 
     describe "allowed_params_for" do

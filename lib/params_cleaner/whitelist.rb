@@ -35,7 +35,11 @@ module ParamsCleaner
 
     def _clean_array(key, value)
       cleaned_values = value.map do |sub_value|
-        _clean_hash(key, sub_value).last
+        if sub_value.is_a?(Hash)
+          _clean_hash(key, sub_value).last
+        else
+          sub_value
+        end
       end
       [key, cleaned_values]
     end
