@@ -3,12 +3,11 @@ require "active_support/concern"
 require "active_support/core_ext/hash/deep_merge"
 require "active_support/core_ext/hash/slice"
 require "active_support/hash_with_indifferent_access"
+require "params_cleaner/version"
 require "params_cleaner/whitelist"
 
 module ParamsCleaner
   extend ActiveSupport::Concern
-
-  VERSION = "0.4.2"
 
   def clean_params
     sanitized_params = _applicable_whitelists.map do |whitelist|

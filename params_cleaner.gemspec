@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-require File.expand_path("../lib/params_cleaner", __FILE__)
+require File.expand_path("../lib/params_cleaner/version", __FILE__)
 
 Gem::Specification.new do |gem|
   gem.authors       = ["Drew Olson"]
