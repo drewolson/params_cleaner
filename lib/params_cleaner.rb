@@ -3,7 +3,7 @@ require "active_support/concern"
 require "active_support/core_ext/hash/deep_merge"
 require "active_support/core_ext/hash/slice"
 require "active_support/hash_with_indifferent_access"
-require "./lib/params_cleaner/whitelist"
+require "params_cleaner/whitelist"
 
 module ParamsCleaner
   extend ActiveSupport::Concern
