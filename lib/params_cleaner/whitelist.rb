@@ -1,16 +1,15 @@
 module ParamsCleaner
   class Whitelist
     def initialize(whitelist)
-      @nested_hash = whitelist[-1].kind_of?(Hash) ? whitelist[-1] : {}
-      @top_level_keys = @nested_hash.empty? ? whitelist : whitelist[0..-2]
-      @nested_keys = @nested_hash.keys
+      @whitelist_hash = whitelist.last.kind_of?(Hash) ? whitelist.pop : {}
+      @top_level_keys = whitelist
     end
 
     def sanitize(obj, parent = nil)
       if obj.kind_of?(Hash)
-        whitelist = @nested_keys.dup
+        whitelist = @whitelist_hash.keys
         whitelist.concat(@top_level_keys) unless parent
-        whitelist.concat(@nested_hash[parent]) if @nested_keys.include?(parent)
+        whitelist.concat(@whitelist_hash[parent]) if @whitelist_hash[parent]
         cleaned = obj.map do |key, value|
           [key, sanitize(value, key.to_sym)] if whitelist.include?(key.to_sym)
         end
