@@ -1,7 +1,7 @@
 Params Cleaner
 ===========================
 
-[![Travis CI Status](http://travis-ci.org/drewolson/params_cleaner.png)](http://travis-ci.org/drewolson/params_cleaner)
+[![Build Status](https://travis-ci.org/drewolson/params_cleaner.png?branch=master)](https://travis-ci.org/drewolson/params_cleaner)
 
 # Usage
 
