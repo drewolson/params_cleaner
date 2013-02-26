@@ -2,8 +2,8 @@ require "spec_helper"
 
 describe ParamsCleaner do
   describe "version" do
-    it "is 0.4.2" do
-      ParamsCleaner::VERSION.should == "0.4.2"
+    it "is 0.4.3" do
+      ParamsCleaner::VERSION.should == "0.4.3"
     end
   end
 
